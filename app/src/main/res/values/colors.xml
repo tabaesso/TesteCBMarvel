@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--Marvel Color Palette-->
+
+    <color name="colorPrimary">#e23636</color>
+    <color name="colorPrimaryDark">#504a4a</color>
+    <color name="colorAccent">#f78f3f</color>
+</resources>
