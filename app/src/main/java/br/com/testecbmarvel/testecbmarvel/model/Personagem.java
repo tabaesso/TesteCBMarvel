@@ -1,34 +1,37 @@
 package br.com.testecbmarvel.testecbmarvel.model;
 
-import android.media.Image;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
-import java.util.List;
-
-//@JsonIgnoreProperties(ignoreUnknown = true)
 public class Personagem {
+    private String id;
+    private String nome;
+    private String url;
 
-//    private int id;
-//    private String name;
-//    private Image thumbnail;
-////    private List<>
-////comics (ComicList, optional): A resource list containing comics which feature this character.,
-//
-//
-//    public int getId() {
-//        return id;
-//    }
-//
-//    public String getName() {
-//        return name;
-//    }
-//
-//    public Image getThumbnail() {
-//        return thumbnail;
-//    }
+    public Personagem(String id, String nome, String url){
+        this.id = id;
+        this.nome = nome;
+        this.url = url;
+    }
 
+    public String getUrl() {
+        return url;
+    }
 
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
 }

@@ -1,9 +1,6 @@
 package br.com.testecbmarvel.testecbmarvel.presenter;
 
-import java.util.List;
-
 import br.com.testecbmarvel.testecbmarvel.model.Example;
-import br.com.testecbmarvel.testecbmarvel.model.PersonagemReturn;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -17,10 +14,8 @@ public interface Services {
             @Query("apikey") String key,
             @Query("hash") String hashMd5);
 
-//    @GET("comics")
-//    Call<Comics> getComics(
-//            @Query("")
-//    )
+    @GET("comics")
+    Call<Example> getComics();
 
 
 //    @GET("characters?ts={timestamp}&apiKey={key}&hash={hashMd5}")
