@@ -3,7 +3,7 @@ package br.com.testecbmarvel.testecbmarvel.model.comics_;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Example {
+public class Exemplo {
 
     @SerializedName("code")
     @Expose

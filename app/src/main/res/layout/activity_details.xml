@@ -13,8 +13,8 @@
         android:layout_gravity="center_horizontal"
         android:src="@mipmap/ic_launcher_foreground"
         android:layout_marginTop="8dp"
-        android:layout_width="200dp"
-        android:layout_height="200dp" />
+        android:layout_width="300dp"
+        android:layout_height="300dp" />
 
     <TextView
         android:layout_width="match_parent"
@@ -22,9 +22,24 @@
         tools:text="oiooioioi"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp"
-        android:textColor="#000"
+        android:textColor="@color/colorAccent"
         android:textStyle="bold"
         android:textSize="24sp"
         android:id="@+id/det_txt_nome_personagem"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Comics:"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="8dp"
+        android:textSize="20sp"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerComics"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

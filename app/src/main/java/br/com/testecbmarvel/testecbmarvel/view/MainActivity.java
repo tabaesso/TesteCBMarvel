@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,11 +20,8 @@ import br.com.testecbmarvel.testecbmarvel.extras.Keys;
 import br.com.testecbmarvel.testecbmarvel.extras.Util;
 import br.com.testecbmarvel.testecbmarvel.model.Example;
 import br.com.testecbmarvel.testecbmarvel.model.Personagem;
-import br.com.testecbmarvel.testecbmarvel.model.Result;
 import br.com.testecbmarvel.testecbmarvel.presenter.RetrofitInitializer;
 import br.com.testecbmarvel.testecbmarvel.presenter.Services;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -58,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
 
         Util util = new Util();
 
+        //TODO: Surround with try catch possibles crachs
+
         RetrofitInitializer
                 .getGsonListCharacters()
                 .create(Services.class)
@@ -65,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
                 .enqueue(new Callback<Example>() {
                     @Override
                     public void onResponse(Call<Example> call, Response<Example> response) {
-
+//fd3669cf0c17cd9ca8ce7576a9ecede3  --  1536976898
                         System.out.println("Requisição certa!");
 
                         personagemList = new ArrayList<>();
@@ -84,14 +82,14 @@ public class MainActivity extends AppCompatActivity {
                             sharedPreferences = MainActivity.this.getSharedPreferences("personagem_information", Context.MODE_PRIVATE);
                             sharedPreferences.edit().putString("personagem_id", id).apply();
                             sharedPreferences.edit().putString("personagem_nome", nome).apply();
-//                            sharedPreferences.edit().putString("personagem_url", thumbnail_url).apply();
+                            sharedPreferences.edit().putString("personagem_url", thumbnail_url).apply();
 
                             Personagem personagem = new Personagem(id, nome, thumbnail_url);
 
                             personagemList.add(personagem);
 
-                            //SharedPreferences sharedPreferences = getContext().getSharedPreferences("chefe_preference", Context.MODE_PRIVATE);
-                            //chefeId = sharedPreferences.getString("chefe_id",null);
+//                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("chefe_preference", Context.MODE_PRIVATE);
+//                            chefeId = sharedPreferences.getString("chefe_id",null);
 
                             if(personagemList.size() != 0){
                                 recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
@@ -105,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<Example> call, Throwable t) {
+                        Toast.makeText(MainActivity.this, "Conexão muito lenta", Toast.LENGTH_SHORT).show();
                         System.out.println("Requisição errada!");
                     }
                 });
