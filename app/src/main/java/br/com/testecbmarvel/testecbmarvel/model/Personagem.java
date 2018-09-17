@@ -1,6 +1,9 @@
 package br.com.testecbmarvel.testecbmarvel.model;
 
 public class Personagem {
+
+//     MODEL: Nessa camada, temos as classes que serão manipuladas. O Model disponibiliza os campos que o presenter atualizará
+
     private String id;
     private String nome;
     private String url;

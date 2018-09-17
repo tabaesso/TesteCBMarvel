@@ -7,13 +7,16 @@ import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
+import java.io.IOError;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +42,7 @@ public class DetailsActivity extends AppCompatActivity {
     private  ImageView imageView;
     private TextView txt_personagem;
     private android.support.v7.widget.RecyclerView recyclerView;
+    private LinearLayout loading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +52,7 @@ public class DetailsActivity extends AppCompatActivity {
         imageView = findViewById(R.id.det_img_personagem);
         txt_personagem = findViewById(R.id.det_txt_nome_personagem);
         recyclerView = findViewById(R.id.recyclerComics);
+        loading = findViewById(R.id.details_loading);
 
         activity = DetailsActivity.this;
 
@@ -60,7 +65,6 @@ public class DetailsActivity extends AppCompatActivity {
             id = idAdapter;
             url = urlAdapter;
             name = nameAdapter;
-//            Toast.makeText(this, "OLHA MEU ID " + id, Toast.LENGTH_SHORT).show();
         }
 
         Util util = new Util();
@@ -69,51 +73,49 @@ public class DetailsActivity extends AppCompatActivity {
 
         txt_personagem.setText(name);
 
-        Drawable drawable = Drawable.createFromPath("carregando");
 
-        Glide.with(this)
-                .load(url)
-                .apply(RequestOptions.centerCropTransform())
-                .into(imageView);
+//        try {
+            Glide.with(this)
+                    .load(url)
+                    .apply(RequestOptions.centerCropTransform())
+                    .into(imageView);
+//        } catch (IOError e){
+//            e.printStackTrace();
+//        }
+        
+        try {
+            RetrofitInitializer
+                    .getGsonComics(id)
+                    .create(Services.class)
+                    .getComics(util.timestamp(), 100, Keys.PUBLIC_KEY, util.md5())
+                    .enqueue(new Callback<Exemplo>() {
+                        @Override
+                        public void onResponse(Call<Exemplo> call, Response<Exemplo> response) {
+
+//                            Toast.makeText(DetailsActivity.this, "Carregado!", Toast.LENGTH_SHORT).show();
 
 
-        RetrofitInitializer
-                .getGsonComics(id)
-                .create(Services.class)
-                .getComics(util.timestamp(), Keys.PUBLIC_KEY, util.md5())
-                .enqueue(new Callback<Exemplo>() {
-                    @Override
-                    public void onResponse(Call<Exemplo> call, Response<Exemplo> response) {
+                            response.body().getData().getCount();
+                            int total = Integer.parseInt(response.body().getData().getCount());
 
-                        System.out.println("Requisição certa!");
-                        Toast.makeText(DetailsActivity.this, "Deu bom", Toast.LENGTH_SHORT).show();
-
-//                        personagemList = new ArrayList<>();
-
-                        response.body().getData().getCount();
-                        int total = Integer.parseInt(response.body().getData().getCount());
-
-                        comicsList = new ArrayList<>();
-                        for (int i = 0; i < (total - 1); i++){
+                            comicsList = new ArrayList<>();
+                            for (int i = 0; i < (total - 1); i++) {
 
 //                              String s = response.body().getData().getResults().get(i).getThumbnail();
-                            String extension = response.body().getData().getResults().get(i).getThumbnail().getExtension();
-                            String url = response.body().getData().getResults().get(i).getThumbnail().getPath() + "." + extension;
-
-//                            Personagem personagem = new Personagem(id, nome, thumbnail_url);
-
-//                            personagemList.add(personagem);
+                                String extension = response.body().getData().getResults().get(i).getThumbnail().getExtension();
+                                String url = response.body().getData().getResults().get(i).getThumbnail().getPath() + "." + extension;
 
 
-                            comicsList.add(url);
+                                comicsList.add(url);
 
-                            if (comicsList.size() != 0) {
-                                recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-                                recyclerView.setAdapter(new ComicsAdapter(activity, comicsList));
-                            }
+                                if (comicsList.size() != 0) {
+                                    recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+                                    recyclerView.setAdapter(new ComicsAdapter(activity, comicsList));
+                                    loading.setVisibility(View.GONE);
+                                }
 
 
-                            System.out.println(comicsList);
+//                            System.out.println(comicsList);
 
 //                            String thumbnail_extension = response.body().getData().getResults().get(i).getThumbnail().getExtension();
 
@@ -136,15 +138,22 @@ public class DetailsActivity extends AppCompatActivity {
 //                            }
 
 
+                            }
+
                         }
 
-                    }
+                        @Override
+                        public void onFailure(Call<Exemplo> call, Throwable t) {
+                            System.out.println("Requisição errada!");
+                            Toast.makeText(DetailsActivity.this, "Problemas com a conexão!", Toast.LENGTH_SHORT).show();
+                            loading.setVisibility(View.GONE);
+                        }
+                    });
 
-                    @Override
-                    public void onFailure(Call<Exemplo> call, Throwable t) {
-                        System.out.println("Requisição errada!");
-                    }
-                });
+        } catch (IOError e){
+            e.printStackTrace();
+            Toast.makeText(activity, "Não foi possível carregar os dados :(", Toast.LENGTH_SHORT).show();
+        }
 
 
     }

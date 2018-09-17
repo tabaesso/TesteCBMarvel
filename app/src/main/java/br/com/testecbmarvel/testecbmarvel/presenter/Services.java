@@ -20,7 +20,7 @@ public interface Services {
     @GET("characters?")
     Call<Example> getSearch(
             @Query("ts") long timestamp,
-            @Query("limit") long limit,
+            @Query("offset") long offset,
             @Query("nameStartsWith") String comeco,
             @Query("apikey") String key,
             @Query("hash") String hashMd5);
@@ -33,6 +33,7 @@ public interface Services {
     @GET("comics?")
     Call<Exemplo> getComics(
             @Query("ts") long timestamp,
+            @Query("limit") long limit,
             @Query("apikey") String key,
             @Query("hash") String hashMd5);
 

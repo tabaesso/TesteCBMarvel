@@ -7,9 +7,10 @@ import br.com.testecbmarvel.testecbmarvel.extras.Util;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.converter.jackson.JacksonConverterFactory;
 
 public class RetrofitInitializer {
+
+//     PRESENTER: É o mediador entre a View e o Model. Atualiza a view e sincroniza com o Model.
 
     public static Retrofit getGsonListCharacters() {
         final OkHttpClient okHttpClient = new OkHttpClient.Builder()

@@ -37,6 +37,16 @@
         android:layout_marginBottom="8dp"
         android:textSize="20sp"/>
 
+    <LinearLayout
+        android:id="@+id/details_loading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerComics"
         android:layout_width="match_parent"
