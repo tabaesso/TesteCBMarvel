@@ -12,8 +12,23 @@ public interface Services {
     @GET("characters?")
     Call<Example> lista(
             @Query("ts") long timestamp,
+            @Query("offset") long offset,
+//            @Query("limit") long limit,
             @Query("apikey") String key,
             @Query("hash") String hashMd5);
+
+    @GET("characters?")
+    Call<Example> getSearch(
+            @Query("ts") long timestamp,
+            @Query("limit") long limit,
+            @Query("nameStartsWith") String comeco,
+            @Query("apikey") String key,
+            @Query("hash") String hashMd5);
+
+//    @GET("characters?")
+//    Call<Example> lista(
+//            @Query("limit") long limit,
+//            @Query("apikey") String key);
 
     @GET("comics?")
     Call<Exemplo> getComics(

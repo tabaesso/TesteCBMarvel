@@ -21,6 +21,7 @@ public class RetrofitInitializer {
         return new Retrofit
                 .Builder()
                 .baseUrl("http://gateway.marvel.com/v1/public/")
+//                .baseUrl("https://gateway.marvel.com:443/v1/public/")
 //                .baseUrl("http://gateway.marvel.com/v1/public/characters?ts=" + util.timestamp() + "&apikey=" + Keys.PUBLIC_KEY + "&hash=" + util.md5())
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(okHttpClient)

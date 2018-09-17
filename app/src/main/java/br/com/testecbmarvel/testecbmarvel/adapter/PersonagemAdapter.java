@@ -8,8 +8,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 
@@ -61,6 +65,7 @@ public class PersonagemAdapter extends RecyclerView.Adapter<PersonagemAdapter.Pe
         TextView txt_nome_personagem;
         TextView txt_id_personagem;
         TextView txt_url;
+        ImageView img_personagem;
 
         public PersonagemViewHolder(View itemView) {
             super(itemView);
@@ -68,6 +73,7 @@ public class PersonagemAdapter extends RecyclerView.Adapter<PersonagemAdapter.Pe
             txt_nome_personagem = itemView.findViewById(R.id.card_txt_nome_personagem);
             txt_id_personagem = itemView.findViewById(R.id.card_txt_id_personagem);
             txt_url = itemView.findViewById(R.id.card_txt_url);
+            img_personagem = itemView.findViewById(R.id.card_img_personagem);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -100,6 +106,11 @@ public class PersonagemAdapter extends RecyclerView.Adapter<PersonagemAdapter.Pe
             txt_nome_personagem.setText(personagem.getNome());
             txt_id_personagem.setText(personagem.getId());
             txt_url.setText(personagem.getUrl());
+
+            Glide.with(activity)
+                    .load(personagem.getUrl())
+                    .apply(RequestOptions.circleCropTransform())
+                    .into(img_personagem);
         }
         }
 

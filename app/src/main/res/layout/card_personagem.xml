@@ -26,7 +26,7 @@
 
         <TextView
             android:id="@+id/card_txt_nome_personagem"
-            android:layout_width="wrap_content"
+            android:layout_width="270sp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:layout_centerVertical="true"
@@ -35,6 +35,14 @@
             android:textStyle="bold"
             android:textColor="#000"
             android:text="Deadpool"/>
+
+        <ImageView
+            android:id="@+id/card_img_personagem"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp" />
 
     </RelativeLayout>
 
