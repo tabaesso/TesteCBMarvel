@@ -69,19 +69,15 @@ public class DetailsActivity extends AppCompatActivity {
 
         Util util = new Util();
 
-        //Configurações:
-
         txt_personagem.setText(name);
 
 
-//        try {
+
             Glide.with(this)
                     .load(url)
                     .apply(RequestOptions.centerCropTransform())
                     .into(imageView);
-//        } catch (IOError e){
-//            e.printStackTrace();
-//        }
+
         
         try {
             RetrofitInitializer
@@ -92,7 +88,6 @@ public class DetailsActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<Exemplo> call, Response<Exemplo> response) {
 
-//                            Toast.makeText(DetailsActivity.this, "Carregado!", Toast.LENGTH_SHORT).show();
 
 
                             response.body().getData().getCount();
@@ -101,7 +96,6 @@ public class DetailsActivity extends AppCompatActivity {
                             comicsList = new ArrayList<>();
                             for (int i = 0; i < (total - 1); i++) {
 
-//                              String s = response.body().getData().getResults().get(i).getThumbnail();
                                 String extension = response.body().getData().getResults().get(i).getThumbnail().getExtension();
                                 String url = response.body().getData().getResults().get(i).getThumbnail().getPath() + "." + extension;
 
@@ -113,30 +107,6 @@ public class DetailsActivity extends AppCompatActivity {
                                     recyclerView.setAdapter(new ComicsAdapter(activity, comicsList));
                                     loading.setVisibility(View.GONE);
                                 }
-
-
-//                            System.out.println(comicsList);
-
-//                            String thumbnail_extension = response.body().getData().getResults().get(i).getThumbnail().getExtension();
-
-
-//                            sharedPreferences = MainActivity.this.getSharedPreferences("personagem_information", Context.MODE_PRIVATE);
-//                            sharedPreferences.edit().putString("personagem_id", id).apply();
-//                            sharedPreferences.edit().putString("personagem_nome", nome).apply();
-//                            sharedPreferences.edit().putString("personagem_url", thumbnail_url).apply();
-
-//                             personagem = new Personagem(id, nome, thumbnail_url);
-
-//                            personagemList.add(personagem);
-
-//                            SharedPreferences sharedPreferences = getContext().getSharedPreferences("chefe_preference", Context.MODE_PRIVATE);
-//                            chefeId = sharedPreferences.getString("chefe_id",null);
-
-//                            if(personagemList.size() != 0){
-//                                recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
-//                                recyclerView.setAdapter(new ComicsAdapter(activity, personagemList));
-//                            }
-
 
                             }
 
