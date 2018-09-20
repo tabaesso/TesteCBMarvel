@@ -8,6 +8,19 @@
     tools:context=".view.DetailsActivity"
     android:orientation="vertical">
 
+    <Button
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Carregar novamente"
+        android:textSize="20dp"
+        android:textColor="#fff"
+        android:padding="10dp"
+        android:background="@drawable/reload"
+        android:visibility="gone"
+        android:id="@+id/details_Reload"/>
+
     <ImageView
         android:id="@+id/det_img_personagem"
         android:layout_gravity="center_horizontal"

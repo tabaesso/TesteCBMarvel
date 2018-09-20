@@ -7,7 +7,9 @@ import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -42,6 +44,7 @@ public class DetailsActivity extends AppCompatActivity {
     private  ImageView imageView;
     private TextView txt_personagem;
     private android.support.v7.widget.RecyclerView recyclerView;
+    private Button buttonReload;
     private LinearLayout loading;
 
     @Override
@@ -53,6 +56,7 @@ public class DetailsActivity extends AppCompatActivity {
         txt_personagem = findViewById(R.id.det_txt_nome_personagem);
         recyclerView = findViewById(R.id.recyclerComics);
         loading = findViewById(R.id.details_loading);
+        buttonReload = findViewById(R.id.details_Reload);
 
         activity = DetailsActivity.this;
 
@@ -78,7 +82,13 @@ public class DetailsActivity extends AppCompatActivity {
                     .apply(RequestOptions.centerCropTransform())
                     .into(imageView);
 
-        
+
+        carregaLista(util);
+
+
+    }
+
+    private void carregaLista(final Util util) {
         try {
             RetrofitInitializer
                     .getGsonComics(id)
@@ -88,26 +98,35 @@ public class DetailsActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<Exemplo> call, Response<Exemplo> response) {
 
+                            try {
+                                if (response.body() != null) {
+                                    response.body().getData().getCount();
+                                    int total = Integer.parseInt(response.body().getData().getCount());
+                                    buttonReload.setVisibility(View.GONE);
+
+                                    comicsList = new ArrayList<>();
+                                    for (int i = 0; i < (total - 1); i++) {
+
+                                        String extension = response.body().getData().getResults().get(i).getThumbnail().getExtension();
+                                        String url = response.body().getData().getResults().get(i).getThumbnail().getPath() + "." + extension;
 
 
-                            response.body().getData().getCount();
-                            int total = Integer.parseInt(response.body().getData().getCount());
+                                        comicsList.add(url);
 
-                            comicsList = new ArrayList<>();
-                            for (int i = 0; i < (total - 1); i++) {
+                                        if (comicsList.size() != 0) {
+                                            recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+                                            recyclerView.setAdapter(new ComicsAdapter(activity, comicsList));
+                                            loading.setVisibility(View.GONE);
+                                        }
 
-                                String extension = response.body().getData().getResults().get(i).getThumbnail().getExtension();
-                                String url = response.body().getData().getResults().get(i).getThumbnail().getPath() + "." + extension;
-
-
-                                comicsList.add(url);
-
-                                if (comicsList.size() != 0) {
-                                    recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-                                    recyclerView.setAdapter(new ComicsAdapter(activity, comicsList));
-                                    loading.setVisibility(View.GONE);
+                                    }
+                                }else {
+                                    errorAPI(util);
                                 }
 
+
+                            }catch (IOError error){
+                                Toast.makeText(context, "Não foi possível carregar os dados :(", Toast.LENGTH_SHORT).show();
                             }
 
                         }
@@ -117,6 +136,7 @@ public class DetailsActivity extends AppCompatActivity {
                             System.out.println("Requisição errada!");
                             Toast.makeText(DetailsActivity.this, "Problemas com a conexão!", Toast.LENGTH_SHORT).show();
                             loading.setVisibility(View.GONE);
+                            errorAPI(util);
                         }
                     });
 
@@ -124,7 +144,17 @@ public class DetailsActivity extends AppCompatActivity {
             e.printStackTrace();
             Toast.makeText(activity, "Não foi possível carregar os dados :(", Toast.LENGTH_SHORT).show();
         }
+    }
 
-
+    private void errorAPI(final Util util) {
+        Log.e("ERRO Response", "Erro ao carregar dados");
+        Toast.makeText(activity, "Não foi possível carregar os dados :(", Toast.LENGTH_SHORT).show();
+        buttonReload.setVisibility(View.VISIBLE);
+        buttonReload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                carregaLista(util);
+            }
+        });
     }
 }

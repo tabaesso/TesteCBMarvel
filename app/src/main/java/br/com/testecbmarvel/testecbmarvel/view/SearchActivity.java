@@ -10,6 +10,7 @@ import android.support.v7.widget.SearchView;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.testecbmarvel.testecbmarvel.R;
+import br.com.testecbmarvel.testecbmarvel.adapter.Personagem1Adapter;
 import br.com.testecbmarvel.testecbmarvel.adapter.PersonagemAdapter;
 import br.com.testecbmarvel.testecbmarvel.extras.Keys;
 import br.com.testecbmarvel.testecbmarvel.extras.Util;
@@ -52,6 +54,7 @@ public class SearchActivity extends AppCompatActivity {
         buttonSearch = findViewById(R.id.search_button);
         loading = findViewById(R.id.search_loading);
         recyclerView = findViewById(R.id.recyclerSearch);
+
 
         final Util util = new Util();
 
@@ -98,7 +101,7 @@ public class SearchActivity extends AppCompatActivity {
         }
     }
 
-    public void buscar(Util util, String textoParaBuscar){
+    public void buscar(final Util util, final String textoParaBuscar){
         try {
             RetrofitInitializer
                     .getGsonListCharacters()
@@ -112,6 +115,7 @@ public class SearchActivity extends AppCompatActivity {
                             personagemList = new ArrayList<>();
 
                             int total = Integer.parseInt(response.body().getData().getCount());
+
 
                             for (int i = 0; i < total; i++) {
 
@@ -134,7 +138,7 @@ public class SearchActivity extends AppCompatActivity {
 
                                 if (personagemList.size() != 0) {
                                     recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
-                                    recyclerView.setAdapter(new PersonagemAdapter(activity, personagemList));
+                                    recyclerView.setAdapter(new Personagem1Adapter(activity, personagemList));
                                     loading.setVisibility(View.GONE);
                                 } else {
                                     Toast.makeText(context, "Nenhum personagem encontrado!", Toast.LENGTH_SHORT).show();

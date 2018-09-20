@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -16,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -32,6 +34,7 @@ import br.com.testecbmarvel.testecbmarvel.extras.Keys;
 import br.com.testecbmarvel.testecbmarvel.extras.Util;
 import br.com.testecbmarvel.testecbmarvel.model.Example;
 import br.com.testecbmarvel.testecbmarvel.model.Personagem;
+import br.com.testecbmarvel.testecbmarvel.model.Result;
 import br.com.testecbmarvel.testecbmarvel.presenter.PaginationScrollListener;
 import br.com.testecbmarvel.testecbmarvel.presenter.RetrofitInitializer;
 import br.com.testecbmarvel.testecbmarvel.presenter.Services;
@@ -49,8 +52,8 @@ public class MainActivity extends AppCompatActivity {
 
     private android.support.v7.widget.RecyclerView recyclerView;
     private RelativeLayout loading;
-    private ProgressBar progressBarRecycle;
-//    private TextView txtEmptyMessage;
+    private TextView txtEmptyMessage;
+    private Button buttonAtualizar;
 
     private static final int PAGE_START = 0;
     private boolean isLoading = false;
@@ -70,31 +73,32 @@ public class MainActivity extends AppCompatActivity {
     Context context = MainActivity.this;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        recyclerView = findViewById(R.id.recyclerPersonagens);
+        loading = findViewById(R.id.main_loading);
+        txtEmptyMessage = findViewById(R.id.main_txtEmptyMessage);
+        buttonAtualizar = findViewById(R.id.main_buttonReload);
+        activity = MainActivity.this;
+        loading.setVisibility(View.VISIBLE);
+
         currentPage = PAGE_START;
         isLoading = false;
         isLastPage = false;
-
-        recyclerView = findViewById(R.id.recyclerPersonagens);
-        loading = findViewById(R.id.main_loading);
-        progressBarRecycle = findViewById(R.id.main_ProgressBar_Recycle);
-//        txtEmptyMessage = findViewById(R.id.main_txtEmptyMessage);
-
-        activity = MainActivity.this;
-        loading.setVisibility(View.VISIBLE);
         util = new Util();
 
         RelativeLayout item = (RelativeLayout)findViewById(R.id.main_relative);
         final View view = getLayoutInflater().inflate(R.layout.activity_main, null);
         item.addView(view);
 
-        try{
+        carregaLista(view);
+    }
 
+    private void carregaLista(final View view) {
+        try{
         RetrofitInitializer
                 .getGsonListCharacters()
                 .create(Services.class)
@@ -102,13 +106,12 @@ public class MainActivity extends AppCompatActivity {
                 .enqueue(new Callback<Example>() {
                     @Override
                     public void onResponse(Call<Example> call, Response<Example> response) {
-//                        fd3669cf0c17cd9ca8ce7576a9ecede3  --  1536976898
                         personagemList = new ArrayList<>();
-//
+
                         int total = Integer.parseInt(response.body().getData().getCount());
 
-                        for (int i = 0; i < total; i++) {
-//
+                        for (int i = 0; i < (total - 1); i++) {
+
                             String id = response.body().getData().getResults().get(i).getId();
                             String nome = response.body().getData().getResults().get(i).getName();
                             String thumbnail_url = response.body().getData().getResults().get(i).getThumbnail().getPath()
@@ -118,24 +121,17 @@ public class MainActivity extends AppCompatActivity {
                             sharedPreferences.edit().putString("personagem_id", id).apply();
                             sharedPreferences.edit().putString("personagem_nome", nome).apply();
                             sharedPreferences.edit().putString("personagem_url", thumbnail_url).apply();
-//
+
                             Personagem personagem = new Personagem(id, nome, thumbnail_url);
-//
+
                             personagemList.add(personagem);
-//
-//
-//                            if (personagemList.size() != 0) {
-//                                recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
-//                                recyclerView.setAdapter(new PersonagemAdapter(activity, personagemList));
-//                                loading.setVisibility(View.GONE);
-//                            }
 
 
                         }
 
 
                         if (personagemList.size() != 0) {
-                            adapter = new PersonagemAdapter(activity, personagemList);
+                            adapter = new PersonagemAdapter(activity);
                             linearLayoutManager = new LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false);
                             recyclerView.setLayoutManager(linearLayoutManager);
                             recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -147,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
                             recyclerView.addOnScrollListener(new PaginationScrollListener(linearLayoutManager) {
                                 @Override
                                 protected void loadMoreItems() {
-                                    progressBarRecycle.setVisibility(View.VISIBLE);
+//                                    progressBarRecycle.setVisibility(View.VISIBLE);
                                     isLoading = true;
                                     currentPage += 1;
                                     inicio += 20;
@@ -196,7 +192,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void desabilitaProgress() {
         loading.setVisibility(View.GONE);
-        progressBarRecycle.setVisibility(View.GONE);
     }
 
     private void loadPage(View view) {
@@ -213,54 +208,46 @@ public class MainActivity extends AppCompatActivity {
                     .enqueue(new Callback<Example>() {
                         @Override
                         public void onResponse(Call<Example> call, Response<Example> response) {
-
                             if (response.body() != null) {
 
-                                progressBarRecycle.setVisibility(View.GONE);
-                                Toast.makeText(activity, "TESTANDO", Toast.LENGTH_SHORT).show();
-                                System.out.println("LOAD = " + inicio);
-//
-//
-//                            Example publications = response.body();
-//
-//
-//                            if (Integer.parseInt(publications.getData().getTotal()) > 0) {
-////                                se é a primeira página que está sendo carregada, atualiza o total de publicações
-//                                if (page == 0) {
-//                                    TOTAL_PAGES = (int) (Math.floor(Integer.parseInt(publications.getData().getTotal()) / PAGE_SIZE));
-//                                    if (Integer.parseInt(publications.getData().getTotal()) % PAGE_SIZE != 0) {
-//                                        TOTAL_PAGES++;
-//                                    }
-//                                }
-//
-////
-//                                progressBarRecycle.setVisibility(View.GONE);
-////                                adapter.addAll(publications);
-////                                adapter.removeLoadingFooter();
-//                                isLoading = false;
-////
-//                                System.out.println("CurrentPage: " + currentPage);
-//                                System.out.println("TOTAL_PAGES: " + TOTAL_PAGES);
-////
-//                                if (currentPage + 1 < TOTAL_PAGES) {
-////                                    adapter.addLoadingFooter();
-//                                } else {
-//                                    isLastPage = true;
-//                                }
-//                            } else {
-//                                progressBarRecycle.setVisibility(View.GONE);
-//                                txtEmptyMessage.setVisibility(View.VISIBLE);
-//                            }
-//                        } else {
-//                            Log.e("ERRO Response Timeline", "Erro ao carregar dados da timeline");
-//                        }
-//
+                                Example example = response.body();
+
+
+                                if (Integer.parseInt(example.getData().getTotal()) > 0) {
+                                    if (page == 0) {
+                                        TOTAL_PAGES = (int) (Math.floor(Integer.parseInt(example.getData().getTotal()) / PAGE_SIZE));
+                                        if (Integer.parseInt(example.getData().getTotal()) % PAGE_SIZE != 0) {
+                                            TOTAL_PAGES++;
+                                        }
+                                    }
+
+                                    adapter.addAll((ArrayList<Result>) example.getData().getResults());
+                                    adapter.removeLoadingFooter();
+                                    isLoading = false;
+                                    buttonAtualizar.setVisibility(View.GONE);
+
+                                    System.out.println("CurrentPage: " + currentPage);
+                                    System.out.println("TOTAL_PAGES: " + TOTAL_PAGES);
+
+                                    if (currentPage + 1 < TOTAL_PAGES) {
+                                        adapter.addLoadingFooter();
+                                    } else {
+                                        isLastPage = true;
+                                    }
+
+                                } else {
+                                    txtEmptyMessage.setVisibility(View.VISIBLE);
+                                }
+                            } else {
+                                errorAPI(view);
                             }
+
                         }
 
                         @Override
                         public void onFailure(Call<Example> call, Throwable t) {
                             Toast.makeText(MainActivity.this, "Problemas com a conexão!", Toast.LENGTH_SHORT).show();
+                            errorAPI(view);
                             System.out.println("Requisição errada!");
                             desabilitaProgress();
                         }
@@ -271,6 +258,19 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    private void errorAPI(final View view) {
+        Log.e("ERRO Response Timeline", "Erro ao carregar dados da timeline");
+        Toast.makeText(activity, "Não foi possível carregar os dados :(", Toast.LENGTH_SHORT).show();
+        buttonAtualizar.setVisibility(View.VISIBLE);
+        buttonAtualizar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                inicio = 0;
+                carregaLista(view);
+            }
+        });
     }
 
 
