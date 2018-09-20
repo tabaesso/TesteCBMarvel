@@ -147,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
                             recyclerView.addOnScrollListener(new PaginationScrollListener(linearLayoutManager) {
                                 @Override
                                 protected void loadMoreItems() {
+                                    progressBarRecycle.setVisibility(View.VISIBLE);
                                     isLoading = true;
                                     currentPage += 1;
                                     inicio += 20;
@@ -195,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void desabilitaProgress() {
         loading.setVisibility(View.GONE);
-        progressBarRecycle.setVisibility(View.INVISIBLE);
+        progressBarRecycle.setVisibility(View.GONE);
     }
 
     private void loadPage(View view) {
@@ -214,7 +215,8 @@ public class MainActivity extends AppCompatActivity {
                         public void onResponse(Call<Example> call, Response<Example> response) {
 
                             if (response.body() != null) {
-//
+
+                                progressBarRecycle.setVisibility(View.GONE);
                                 Toast.makeText(activity, "TESTANDO", Toast.LENGTH_SHORT).show();
                                 System.out.println("LOAD = " + inicio);
 //

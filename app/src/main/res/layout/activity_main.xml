@@ -44,10 +44,10 @@
 
         <ProgressBar
             android:id="@+id/main_ProgressBar_Recycle"
-            android:layout_below="@id/recyclerPersonagens"
-            android:visibility="visible"
+            android:layout_alignParentBottom="true"
+            android:visibility="gone"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="30dp" />
     </RelativeLayout>
 
     <RelativeLayout

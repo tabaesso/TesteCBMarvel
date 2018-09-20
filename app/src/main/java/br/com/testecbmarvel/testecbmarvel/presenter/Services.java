@@ -20,7 +20,7 @@ public interface Services {
     @GET("characters?")
     Call<Example> getSearch(
             @Query("ts") long timestamp,
-            @Query("offset") long offset,
+            @Query("limit") long limit,
             @Query("nameStartsWith") String comeco,
             @Query("apikey") String key,
             @Query("hash") String hashMd5);

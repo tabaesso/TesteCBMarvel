@@ -59,7 +59,7 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH){
-                    verificaParaBusca(util);
+                    apertaBuscar(util);
                     return true;
                 }
                 return false;
@@ -69,7 +69,7 @@ public class SearchActivity extends AppCompatActivity {
         buttonSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                verificaParaBusca(util);
+                apertaBuscar(util);
             }
         });
 
@@ -79,10 +79,20 @@ public class SearchActivity extends AppCompatActivity {
 
     }
 
+    private void apertaBuscar(Util util) {
+        try {
+            verificaParaBusca(util);
+        } catch (IOError error){
+            error.printStackTrace();
+            Toast.makeText(context, "Aguarde...", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void verificaParaBusca(Util util) {
         String texto = editPesquisa.getText().toString();
         if (!texto.isEmpty()) {
             buscar(util, texto);
+            loading.setVisibility(View.VISIBLE);
         } else {
             Toast.makeText(context, "Preencha o campo!", Toast.LENGTH_SHORT).show();
         }
